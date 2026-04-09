@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set GOOS and GOARCH
         run: |
@@ -35,6 +35,8 @@ jobs:
           echo "GOARCH=${{ matrix.goarch }}" >> $GITHUB_ENV
       - name: Install Skopeo
         uses: ./
+        with:
+          mode: build
           
       - name: Check Skopeo version
         run: skopeo --version

@@ -1,6 +1,6 @@
 # Install Skopeo Action
 
-Installs Skopeo in GitHub Actions runner.
+Installs Skopeo in GitHub Actions runner. Source: [https://github.com/containers/skopeo](https://github.com/containers/skopeo)
 
 ## Inputs
 
