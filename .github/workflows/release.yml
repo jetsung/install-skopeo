@@ -1,6 +1,9 @@
 name: Release Skopeo Publish
 
 on:
+  push:
+    tags:
+      - 'skopeo-v*'
   release:
     types: [created]
 
@@ -13,7 +16,7 @@ env:
 jobs:
   release:
     # 仅在标签以 "skopeo" 开头时运行
-    if: startsWith(github.event.release.tag_name, 'skopeo')
+    if: startsWith(github.event.release.tag_name, 'skopeo') || startsWith(github.ref_name, 'skopeo')
     strategy:
       matrix:
         include:
@@ -48,11 +51,12 @@ jobs:
         shell: bash
         run: |
           mkdir "${{ env.RELEASE_DIR }}"
-          tar -cJf "${{ env.RELEASE_DIR }}/${{ github.event.release.tag_name }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.xz" -C /usr/local/bin skopeo
+          TAG_NAME="${{ github.event.release.tag_name || github.ref_name }}"
+          tar -cJf "${{ env.RELEASE_DIR }}/${TAG_NAME}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.xz" -C /usr/local/bin skopeo
       - name: Upload release assets
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ github.event.release.tag_name }}
+          tag_name: ${{ github.event.release.tag_name || github.ref_name }}
           files: ${{ env.RELEASE_DIR }}/*.tar.xz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
