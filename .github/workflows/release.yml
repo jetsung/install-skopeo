@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set GOOS and GOARCH
         run: |
@@ -50,7 +50,7 @@ jobs:
           mkdir "${{ env.RELEASE_DIR }}"
           tar -cJf "${{ env.RELEASE_DIR }}/${{ github.event.release.tag_name }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.xz" -C /usr/local/bin skopeo
       - name: Upload release assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.event.release.tag_name }}
           files: ${{ env.RELEASE_DIR }}/*.tar.xz
