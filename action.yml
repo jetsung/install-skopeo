@@ -21,7 +21,7 @@ runs:
       shell: bash
       run: |
         RELEASES_URL="https://api.github.com/repos/jetsung/install-skopeo/releases"
-        RELEASES_JSON=$(curl -s $RELEASES_URL)
+        RELEASES_JSON=$(curl -sL $RELEASES_URL)
 
         DOWNLOAD_URL=""
 
@@ -71,12 +71,12 @@ runs:
       shell: bash
       run: |
         export GOPATH=$(go env GOPATH)
-        git clone https://github.com/containers/skopeo.git $GOPATH/src/github.com/containers/skopeo
-        cd $GOPATH/src/github.com/containers/skopeo
+        git clone https://github.com/podman-container-tools/skopeo.git $GOPATH/src/github.com/podman-container-tools/skopeo
+        cd $GOPATH/src/github.com/podman-container-tools/skopeo
         SKOPEO_VERSION=""
         if [ -z "${{ inputs.version }}" ]; then
           echo "Version is empty, using latest stable"
-          SKOPEO_VERSION=$(curl -s https://api.github.com/repos/containers/skopeo/releases/latest | jq -r '.tag_name')
+          SKOPEO_VERSION=$(curl -s https://api.github.com/repos/podman-container-tools/skopeo/releases/latest | jq -r '.tag_name')
         elif [[ "${{ inputs.version }}" != "dev" && "${{ inputs.version }}" != "master" ]]; then
           SKOPEO_VERSION="v${{ inputs.version }}"
         fi
