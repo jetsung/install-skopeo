@@ -86,11 +86,13 @@ runs:
         fi
         make bin/skopeo
         sudo cp bin/skopeo /usr/local/bin/skopeo
-    - name: Setup Policy
+    - name: Setup Policy and Registry Config
       shell: bash
       run: |
         mkdir -p ~/.config/containers
         cp ${{ github.action_path }}/policy.json ~/.config/containers/policy.json
+        cp ${{ github.action_path }}/registries.conf ~/.config/containers/registries.conf
+        echo "CONTAINERS_REGISTRIES_CONF=$HOME/.config/containers/registries.conf" >> $GITHUB_ENV
     - name: Check Skopeo version
       shell: bash
       run: |
