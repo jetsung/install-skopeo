@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - 'skopeo-v*'
-  release:
-    types: [created]
 
 permissions:
   contents: write
@@ -36,6 +34,7 @@ jobs:
         run: |
           echo "GOOS=${{ matrix.goos }}" >> $GITHUB_ENV
           echo "GOARCH=${{ matrix.goarch }}" >> $GITHUB_ENV
+          echo "RELEASE_BODY=- https://github.com/podman-container-tools/skopeo/releases/tag/v$(echo '${{ github.ref_name }}' | sed 's/^skopeo-v//')" >> $GITHUB_ENV
       - name: Install Skopeo
         uses: ./
         with:
@@ -53,10 +52,12 @@ jobs:
           mkdir "${{ env.RELEASE_DIR }}"
           TAG_NAME="${{ github.event.release.tag_name || github.ref_name }}"
           tar -cJf "${{ env.RELEASE_DIR }}/${TAG_NAME}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.xz" -C /usr/local/bin skopeo
-      - name: Upload release assets
+      - name: Upload release assets (draft)
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.event.release.tag_name || github.ref_name }}
           files: ${{ env.RELEASE_DIR }}/*.tar.xz
+          body: ${{ env.RELEASE_BODY }}
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
