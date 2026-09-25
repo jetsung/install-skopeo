@@ -34,11 +34,14 @@ jobs:
         run: |
           echo "GOOS=${{ matrix.goos }}" >> $GITHUB_ENV
           echo "GOARCH=${{ matrix.goarch }}" >> $GITHUB_ENV
-          echo "RELEASE_BODY=- https://github.com/podman-container-tools/skopeo/releases/tag/v$(echo '${{ github.ref_name }}' | sed 's/^skopeo-v//')" >> $GITHUB_ENV
+          VERSION=$(echo '${{ github.ref_name }}' | sed 's/^skopeo-v//')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "RELEASE_BODY=- https://github.com/podman-container-tools/skopeo/releases/tag/v$VERSION" >> $GITHUB_ENV
       - name: Install Skopeo
         uses: ./
         with:
           mode: build
+          version: "${{ env.VERSION }}"
           
       - name: Check Skopeo version
         run: skopeo --version
